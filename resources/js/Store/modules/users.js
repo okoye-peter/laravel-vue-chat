@@ -1,4 +1,5 @@
-import axios from "axios";
+// import { axios } from "axios";
+import router from '../../Router';
 
 export default {
   namespaced: true,
@@ -29,6 +30,9 @@ export default {
         payload.online;
       state.users.find((user) => user.id === payload.id).last_logged_in =
         payload.last_logged_in;
+        state.users.sort((a, b) => {
+          return a.online;
+        });
     },
     updateUserUnread(state, payload) {
       state.users.find((user) => user.id === payload.id).unread = payload.unread;
@@ -52,7 +56,7 @@ export default {
         .catch((err) => {
           if (err.response.status == 401) {
             commit("setStatus", err.response.status);
-            window.localStorage.removeItem("token");
+            window.localStorage.removeItem("chatApp");
           }
         });
     },
@@ -64,7 +68,7 @@ export default {
         })
         .catch((err) => {
           if (err.response.status == 401) {
-            window.localStorage.removeItem("token");
+            window.localStorage.removeItem("chatApp");
             commit("setStatus", err.response.status);
           }
         });
@@ -74,8 +78,9 @@ export default {
       await axios
         .post("/api/login", data)
         .then((response) => {
-          window.localStorage.setItem("token", response.data.token);
-          this.router.push({ name: "Chats" });
+          window.localStorage.setItem("chatApp", response.data.token);
+          axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token
+          router.push({ name: "Chats" });
         })
         .catch((error) => {
           console.log('err',error);
@@ -96,8 +101,8 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             commit("setStatus", 200);
-            window.localStorage.removeItem("token");
-            this.router.push({ name: "Login" });
+            window.localStorage.removeItem("chatApp");
+            router.push({ name: "Login" });
           }
         })
         .catch(() => {});

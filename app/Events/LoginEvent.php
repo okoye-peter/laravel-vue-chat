@@ -33,6 +33,6 @@ class LoginEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('login');
+        return new Channel('login');
     }
 }

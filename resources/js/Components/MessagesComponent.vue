@@ -1,7 +1,7 @@
 <template>
     <div class="content h-screen" v-show="friendId != 0">
         <div class="messages">
-            <ul v-chat-scroll="{always: false, smooth: true}">
+            <ul>
                 <li v-for="(chat,index) in getActiveUserChats(friendId)" :key="index" :class="[chat.user_id == friendId ? 'sent' : 'replies', chat.type == 1 ? 'image' :'']" >
                     <img :src="[chat.user_id == friendId ? friend.image : getAuthenticatedUser.image]" alt />
                     <p v-if="chat.type == 1">

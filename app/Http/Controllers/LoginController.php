@@ -22,9 +22,6 @@ class LoginController extends Controller
                 'message' => 'Unauthorized'
             ], 401);  
         }
-        
-        
-
         $user = auth()->user();
         $user->update([
             'online' => true,
@@ -42,8 +39,9 @@ class LoginController extends Controller
             'online' => false
         ]);
         broadcast(new LoginEvent($user->fresh()))->toOthers();
-
-        auth()->logout();
+        $user->tokens->each(function ($token, $key) {
+            $token->revoke();
+        });
 
         return response()->json(['message' => 'Successfully logged out'], 200);
     }

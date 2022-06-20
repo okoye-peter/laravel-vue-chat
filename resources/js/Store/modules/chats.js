@@ -1,4 +1,4 @@
-
+// import router from '../../Router';
 
 const chats = {
   namespaced: true,

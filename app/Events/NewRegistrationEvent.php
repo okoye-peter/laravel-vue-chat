@@ -33,6 +33,6 @@ class NewRegistrationEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('register');
+        return new Channel('register');
     }
 }

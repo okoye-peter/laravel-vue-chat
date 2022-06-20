@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import Pusher from "pusher-js";
-
 import ListUsers from "./UsersComponent.vue";
 import Messages from "./MessagesComponent.vue";
 import Details from "./UserDetailsComponent.vue";
@@ -36,37 +34,124 @@ export default {
   },
   async created() {
     await this.getChats();
-    let pusher = new Pusher("4e16f19d699085173311", {
-      cluster: "eu",
-      encrypted: true,
-    });
-    // pusher channels
-    this.chatChannel = pusher.subscribe("chat-room");
-    this.registrationChannel = pusher.subscribe("register");
-    this.loginChannel = pusher.subscribe("login");
-
-    this.chatChannel.bind("App\\Events\\MessageEvent", (data) => {
-      let user = this.getAuthenticatedUser;
-      // new message handling
-      if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
-        this.saveNewMessage(data.chat);
-        if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
-          this.markAsRead(this.friendId);
-        }else{
-          this.emitter.emit('newMessage',data.chat);
-        }
+    Echo.channel('login').listen('LoginEvent', (data) => {
+      if(this.getAuthenticatedUser.id != data.user.id){
+        this.updateUser(data.user);
       }
     });
-    // handling new user registration
-    this.registrationChannel.bind("App\\Events\\RegistrationEvent", (data) => {
+    Echo.channel('register').listen('NewRegistrationEvent', (data) => {
       this.addUser(data.user);
     });
-    // handling another user login broadcast
-    this.loginChannel.bind("App\\Events\\LoginEvent", (data) => {
-      if(this.getAuthenticatedUser.id != data.user.id){
-        this.addUser(data.user);
-      }
-    });
+    if (this.getAuthenticatedUser) {
+      Echo.join(`chat.room.${this.getAuthenticatedUser.id}`)
+        .listen('NewMessageEvent', (data)=>{
+            let user = this.getAuthenticatedUser;
+            // new message handling
+            if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+              this.saveNewMessage(data.chat);
+              if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
+                this.markAsRead(this.friendId);
+              }else{
+                this.emitter.emit('newMessage',data.chat);
+              }
+            }
+            // this.handleIncomingMessages(event.message);
+            console.log('NewMessageEvent',data);
+        })
+        .listenForWhisper('typing', response =>{ 
+            // this.typing = true;
+            // if (this.typingTimer) {
+            //     clearTimeout(this.typingTimer);
+            // }
+            // this.typingTimer = setTimeout(()=>{
+            //     this.typing = false
+            // }, 3000)
+            console.log('typing',response);
+        });
+      // this.loginChannel.listen("LoginEvent", (data) => {
+      //   if (this.getAuthenticatedUser.id != data.user.id) {
+      //     this.updateUser(data.user);
+      //   }
+      // });
+      // this.registrationChannel = Echo.private(
+      //   `user.${this.getAuthenticatedUser.id}`
+      // );
+      // this.registrationChannel.listen("NewRegistrationEvent", (data) => {
+      //   this.addUser(data.user);
+      // });
+    }
+    // Echo.join(`chat-room.${this.getAuthenticatedUser.id}`)
+    // .here(users => {
+    //     console.log('here',users);
+    //   })
+    //   .joining(user => {
+    //       // if(this.users.length <=1){
+    //       //     this.users.push(user);
+    //       // }
+    //       console.log('joining',user);
+    //   })
+    //   .leaving(user => {
+    //       // this.users = this.users.filter(u=>{
+    //       //     u.id !=user.id &&  u.isadmin == 1
+    //       // });
+    //       // this.chats.push(message);
+    //     console.log('leaving',user); 
+    //   })
+    //   .listen('NewMessageEvent', (data)=>{
+    //       let user = this.getAuthenticatedUser;
+    //       // new message handling
+    //       if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+    //         this.saveNewMessage(data.chat);
+    //         if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
+    //           this.markAsRead(this.friendId);
+    //         }else{
+    //           this.emitter.emit('newMessage',data.chat);
+    //         }
+    //   }
+    //       // this.handleIncomingMessages(event.message);
+    //       console.log('NewMessageEvent',event);
+    //   })
+    //   .listenForWhisper('typing', response =>{ 
+    //       // this.typing = true;
+    //       // if (this.typingTimer) {
+    //       //     clearTimeout(this.typingTimer);
+    //       // }
+    //       // this.typingTimer = setTimeout(()=>{
+    //       //     this.typing = false
+    //       // }, 3000)
+    //       console.log('typing',response);
+    //   });
+    // let pusher = new Pusher("4e16f19d699085173311", {
+    //   cluster: "eu",
+    //   encrypted: true,
+    // });
+    // // pusher channels
+    // this.chatChannel = pusher.subscribe("chat-room");
+    // this.registrationChannel = pusher.subscribe("register");
+    // this.loginChannel = pusher.subscribe("login");
+
+    // this.chatChannel.bind("App\\Events\\MessageEvent", (data) => {
+      // let user = this.getAuthenticatedUser;
+      // // new message handling
+      // if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+      //   this.saveNewMessage(data.chat);
+      //   if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
+      //     this.markAsRead(this.friendId);
+      //   }else{
+      //     this.emitter.emit('newMessage',data.chat);
+      //   }
+      // }
+    // });
+    // // handling new user registration
+    // this.registrationChannel.bind("App\\Events\\RegistrationEvent", (data) => {
+    //   this.addUser(data.user);
+    // });
+    // // handling another user login broadcast
+    // this.loginChannel.bind("App\\Events\\LoginEvent", (data) => {
+      // if(this.getAuthenticatedUser.id != data.user.id){
+      //   this.addUser(data.user);
+      // }
+    // });
   },
   methods: {
     ...mapActions({

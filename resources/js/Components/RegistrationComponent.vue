@@ -104,7 +104,7 @@
         </div>
         <p class="ml-24 text-sm">
           Already have an account ?
-          <router-link to="Login" class="ml-8 underline text-blue-400">Sign In</router-link>
+          <router-link :to="{name: 'Login'}" class="ml-8 underline text-blue-400">Sign In</router-link>
         </p>
         <div class="flex md:justify-center">
           <button class="

@@ -63,7 +63,7 @@
         <div class="mb-4 grid grid-cols-4 justify-around relative">
           <p class="col-start-2 text-sm ml-3 col-span-3">
             Don't have an account ?
-            <router-link to="Register" class="ml-8 underline text-blue-400"
+            <router-link :to="{name: 'Register'}" class="ml-8 underline text-blue-400"
               >Sign Up</router-link
             >
           </p>

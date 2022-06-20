@@ -43,8 +43,7 @@ router.beforeEach((to, from, next)=>{
   const requireAuthentication = to.matched.some(
     (record) => record.meta.requireAuthentication
   );
-  const isAuthenticated = window.localStorage.token;
-
+  const isAuthenticated = window.localStorage.chatApp;
   if(!requireAuthentication && isAuthenticated){
     next('/Chats')
   }else if(requireAuthentication && !isAuthenticated){
@@ -52,7 +51,6 @@ router.beforeEach((to, from, next)=>{
   }else{
     next()
   }
-
 })
 
 export default router;
