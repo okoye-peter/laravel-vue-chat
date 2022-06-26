@@ -24,13 +24,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/register', [RegistrationController::class, 'register']);
 Route::post('/login', [LoginController::class, 'login']);
-Route::get('/event', function(){
-    $data = new stdClass();
-    $data->message = 'Hello World';
-    $data->receiver_id = 2;
-    $data->user_id = 1;
-    broadcast(new \App\Events\NewMessageEvent($data));
-}); // test
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::get('/users/profile', [UserController::class, 'getUser']);

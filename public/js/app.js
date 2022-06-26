@@ -19857,12 +19857,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
-/* harmony import */ var pusher_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(pusher_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _UsersComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UsersComponent.vue */ "./resources/js/Components/UsersComponent.vue");
-/* harmony import */ var _MessagesComponent_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MessagesComponent.vue */ "./resources/js/Components/MessagesComponent.vue");
-/* harmony import */ var _UserDetailsComponent_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./UserDetailsComponent.vue */ "./resources/js/Components/UserDetailsComponent.vue");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
+/* harmony import */ var _UsersComponent_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UsersComponent.vue */ "./resources/js/Components/UsersComponent.vue");
+/* harmony import */ var _MessagesComponent_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MessagesComponent.vue */ "./resources/js/Components/MessagesComponent.vue");
+/* harmony import */ var _UserDetailsComponent_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./UserDetailsComponent.vue */ "./resources/js/Components/UserDetailsComponent.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm-bundler.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
@@ -19881,12 +19879,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 
-
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    ListUsers: _UsersComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Messages: _MessagesComponent_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
-    Details: _UserDetailsComponent_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+    ListUsers: _UsersComponent_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    Messages: _MessagesComponent_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Details: _UserDetailsComponent_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -19900,7 +19897,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-      var pusher;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -19909,42 +19905,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return _this.getChats();
 
             case 2:
-              pusher = new (pusher_js__WEBPACK_IMPORTED_MODULE_0___default())("4e16f19d699085173311", {
-                cluster: "eu",
-                encrypted: true
-              }); // pusher channels
-
-              _this.chatChannel = pusher.subscribe("chat-room");
-              _this.registrationChannel = pusher.subscribe("register");
-              _this.loginChannel = pusher.subscribe("login");
-
-              _this.chatChannel.bind("App\\Events\\MessageEvent", function (data) {
-                var user = _this.getAuthenticatedUser; // new message handling
-
-                if (parseInt(data.chat.receiver_id) === parseInt(user.id)) {
-                  _this.saveNewMessage(data.chat);
-
-                  if (parseInt(_this.friendId) === parseInt(data.chat.receiver_id)) {
-                    _this.markAsRead(_this.friendId);
-                  } else {
-                    _this.emitter.emit('newMessage', data.chat);
-                  }
-                }
-              }); // handling new user registration
-
-
-              _this.registrationChannel.bind("App\\Events\\RegistrationEvent", function (data) {
-                _this.addUser(data.user);
-              }); // handling another user login broadcast
-
-
-              _this.loginChannel.bind("App\\Events\\LoginEvent", function (data) {
-                if (_this.getAuthenticatedUser.id != data.user.id) {
-                  _this.addUser(data.user);
-                }
-              });
-
-            case 9:
             case "end":
               return _context.stop();
           }
@@ -19952,14 +19912,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }, _callee);
     }))();
   },
-  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapActions)({
+  methods: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapActions)({
     addUser: "users/AddNewUser",
     updateUser: "users/UpdateUserDetails",
     getChats: "chats/getChats",
     saveNewMessage: "chats/saveChat",
     markAsRead: "chats/markChatsAsRead"
   })),
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_4__.mapGetters)({
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_3__.mapGetters)({
     getAuthenticatedUser: "users/getAuthenticatedUser"
   })),
   mounted: function mounted() {
@@ -19968,6 +19928,46 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.emitter.on('selectUser', function (id) {
       _this2.friendId = id;
     });
+    setTimeout(function () {}, 3500);
+    Echo.channel('login').listen('LoginEvent', function (data) {
+      if (_this2.getAuthenticatedUser.id != data.user.id) {
+        _this2.updateUser(data.user);
+      }
+    });
+    Echo.channel('register').listen('NewRegistrationEvent', function (data) {
+      _this2.addUser(data.user);
+    });
+  },
+  watch: {
+    getAuthenticatedUser: function getAuthenticatedUser(newVal) {
+      var _this3 = this;
+
+      if (Object.keys(newVal).length > 0) {
+        Echo.join("chat.room.".concat(this.getAuthenticatedUser.id)).listen('NewMessageEvent', function (data) {
+          var user = _this3.getAuthenticatedUser; // new message handling
+
+          if (parseInt(data.chat.receiver_id) === parseInt(user.id)) {
+            _this3.saveNewMessage(data.chat);
+
+            if (parseInt(_this3.friendId) === parseInt(data.chat.user_id)) {
+              _this3.markAsRead(_this3.friendId);
+            } else {
+              _this3.emitter.emit('newMessage', data.chat);
+            }
+          } // this.handleIncomingMessages(event.message);
+
+        }).listenForWhisper('typing', function (response) {
+          // this.typing = true;
+          // if (this.typingTimer) {
+          //     clearTimeout(this.typingTimer);
+          // }
+          // this.typingTimer = setTimeout(()=>{
+          //     this.typing = false
+          // }, 3000)
+          console.log('typing', response);
+        });
+      }
+    }
   }
 });
 
@@ -20624,7 +20624,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, null, 512
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelCheckbox, $data.remember_me]]), _hoisted_14])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_16, [_hoisted_17, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    to: "Register",
+    to: {
+      name: 'Register'
+    },
     "class": "ml-8 underline text-blue-400"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -20717,9 +20719,7 @@ var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 
 var _hoisted_18 = [_hoisted_17];
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  var _directive_chat_scroll = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveDirective)("chat-scroll");
-
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("ul", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.getActiveUserChats($data.friendId), function (chat, index) {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)(((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("ul", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)(_ctx.getActiveUserChats($data.friendId), function (chat, index) {
     return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("li", {
       key: index,
       "class": (0,vue__WEBPACK_IMPORTED_MODULE_0__.normalizeClass)([chat.user_id == $data.friendId ? 'sent' : 'replies', chat.type == 1 ? 'image' : ''])
@@ -20740,10 +20740,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     );
   }), 128
   /* KEYED_FRAGMENT */
-  ))])), [[_directive_chat_scroll, {
-    always: false,
-    smooth: true
-  }]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+  ))])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "text",
     placeholder: "Write your message...",
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
@@ -21027,7 +21024,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.validationErrors && $data.validationErrors.password ? $data.validationErrors.password[0] : ""), 513
   /* TEXT, NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vShow, $data.validationErrors != null]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_23, [_hoisted_24, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_router_link, {
-    to: "Login",
+    to: {
+      name: 'Login'
+    },
     "class": "ml-8 underline text-blue-400"
   }, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
@@ -21348,7 +21347,7 @@ router.beforeEach(function (to, from, next) {
   var requireAuthentication = to.matched.some(function (record) {
     return record.meta.requireAuthentication;
   });
-  var isAuthenticated = window.localStorage.token;
+  var isAuthenticated = window.localStorage.chatApp;
 
   if (!requireAuthentication && isAuthenticated) {
     next('/Chats');
@@ -21408,6 +21407,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+// import router from '../../Router';
 var chats = {
   namespaced: true,
   state: {
@@ -21539,8 +21539,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../Router */ "./resources/js/Router/index.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return generator._invoke = function (innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return doneResult(); } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; }(innerFn, self, context), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; this._invoke = function (method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); }; } function maybeInvokeDelegate(delegate, context) { var method = delegate.iterator[context.method]; if (undefined === method) { if (context.delegate = null, "throw" === context.method) { if (delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel; context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method"); } return ContinueSentinel; } var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) { if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; } return next.value = undefined, next.done = !0, next; }; return next.next = next; } } return { next: doneResult }; } function doneResult() { return { value: undefined, done: !0 }; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, define(Gp, "constructor", GeneratorFunctionPrototype), define(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (object) { var keys = []; for (var key in object) { keys.push(key); } return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) { "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); } }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
@@ -21549,6 +21548,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+// import { axios } from "axios";
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   namespaced: true,
@@ -21581,6 +21581,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       state.users.find(function (user) {
         return user.id === payload.id;
       }).last_logged_in = payload.last_logged_in;
+      state.users.sort(function (a, b) {
+        return a.online;
+      });
     },
     updateUserUnread: function updateUserUnread(state, payload) {
       state.users.find(function (user) {
@@ -21598,7 +21601,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref.commit, rootGetters = _ref.rootGetters;
                 _context.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users").then(function (res) {
+                return axios.get("/api/users").then(function (res) {
                   commit("setUsers", res.data.users);
                   var users = rootGetters["users/fetchUsers"];
                   users.forEach(function (user) {
@@ -21611,7 +21614,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 })["catch"](function (err) {
                   if (err.response.status == 401) {
                     commit("setStatus", err.response.status);
-                    window.localStorage.removeItem("token");
+                    window.localStorage.removeItem("chatApp");
                   }
                 });
 
@@ -21632,11 +21635,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref2.commit;
                 _context2.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().get("/api/users/profile").then(function (res) {
+                return axios.get("/api/users/profile").then(function (res) {
                   commit("setAuthenticatedUser", res.data);
                 })["catch"](function (err) {
                   if (err.response.status == 401) {
-                    window.localStorage.removeItem("token");
+                    window.localStorage.removeItem("chatApp");
                     commit("setStatus", err.response.status);
                   }
                 });
@@ -21650,8 +21653,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     AuthenticateUser: function AuthenticateUser(_ref3, data) {
-      var _this = this;
-
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         var commit;
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
@@ -21660,10 +21661,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref3.commit;
                 _context3.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/login", data).then(function (response) {
-                  window.localStorage.setItem("token", response.data.token);
-
-                  _this.router.push({
+                return axios.post("/api/login", data).then(function (response) {
+                  window.localStorage.setItem("chatApp", response.data.token);
+                  axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
+                  _Router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
                     name: "Chats"
                   });
                 })["catch"](function (error) {
@@ -21688,8 +21689,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }))();
     },
     LogOut: function LogOut(_ref4) {
-      var _this2 = this;
-
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
         var commit;
         return _regeneratorRuntime().wrap(function _callee4$(_context4) {
@@ -21698,12 +21697,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 commit = _ref4.commit;
                 _context4.next = 3;
-                return axios__WEBPACK_IMPORTED_MODULE_0___default().post("/api/logout").then(function (response) {
+                return axios.post("/api/logout").then(function (response) {
                   if (response.status == 200) {
                     commit("setStatus", 200);
-                    window.localStorage.removeItem("token");
-
-                    _this2.router.push({
+                    window.localStorage.removeItem("chatApp");
+                    _Router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
                       name: "Login"
                     });
                   }
@@ -21775,21 +21773,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _Router__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Router */ "./resources/js/Router/index.js");
 /* harmony import */ var _Store__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Store */ "./resources/js/Store/index.js");
-/* harmony import */ var sweetalert2_dist_sweetalert2_min_css__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! sweetalert2/dist/sweetalert2.min.css */ "./node_modules/sweetalert2/dist/sweetalert2.min.css");
+/* harmony import */ var mitt__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! mitt */ "./node_modules/mitt/dist/mitt.mjs");
+/* harmony import */ var sweetalert2_dist_sweetalert2_min_css__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! sweetalert2/dist/sweetalert2.min.css */ "./node_modules/sweetalert2/dist/sweetalert2.min.css");
 
 
 
 
- // import { VueAxios } from "vue-axios";
 
 
 
+
+var emitter = (0,mitt__WEBPACK_IMPORTED_MODULE_7__["default"])();
 
 var app = (0,vue__WEBPACK_IMPORTED_MODULE_1__.createApp)((__webpack_require__(/*! ./App.vue */ "./resources/js/App.vue")["default"]));
 app.use(_Router__WEBPACK_IMPORTED_MODULE_5__["default"]);
 app.use((vue_sweetalert2__WEBPACK_IMPORTED_MODULE_2___default()));
 app.use(vue_axios__WEBPACK_IMPORTED_MODULE_3__["default"], (axios__WEBPACK_IMPORTED_MODULE_4___default()));
 app.use(_Store__WEBPACK_IMPORTED_MODULE_6__["default"]);
+app.config.globalProperties.emitter = emitter;
 app.mount("#app");
 
 /***/ }),
@@ -21820,6 +21821,11 @@ window._ = (lodash__WEBPACK_IMPORTED_MODULE_0___default());
 
 window.axios = (axios__WEBPACK_IMPORTED_MODULE_1___default());
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+var token = localStorage.getItem('chatApp');
+
+if (token) {
+  window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+}
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting
@@ -21828,12 +21834,22 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 
 
+
 window.Pusher = (pusher_js__WEBPACK_IMPORTED_MODULE_3___default());
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_2__["default"]({
   broadcaster: 'pusher',
   key: "e1988fa3230eb2bd2e84",
   cluster: "eu",
-  forceTLS: true
+  useTLS: true,
+  // forceTLS: true,
+  encryption: true,
+  // wsHost: window.location.hostname,
+  // wsPort: 6001,
+  auth: {
+    headers: {
+      Authorization: 'Bearer ' + token
+    }
+  }
 });
 
 /***/ }),
@@ -52117,6 +52133,23 @@ var index = {
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (index);
 
+
+
+/***/ }),
+
+/***/ "./node_modules/mitt/dist/mitt.mjs":
+/*!*****************************************!*\
+  !*** ./node_modules/mitt/dist/mitt.mjs ***!
+  \*****************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__(n){return{all:n=n||new Map,on:function(t,e){var i=n.get(t);i?i.push(e):n.set(t,[e])},off:function(t,e){var i=n.get(t);i&&(e?i.splice(i.indexOf(e)>>>0,1):n.set(t,[]))},emit:function(t,e){var i=n.get(t);i&&i.slice().map(function(n){n(e)}),(i=n.get("*"))&&i.slice().map(function(n){n(t,e)})}}}
+//# sourceMappingURL=mitt.mjs.map
 
 
 /***/ })

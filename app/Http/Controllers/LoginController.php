@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except('login');
+    }
+
     public function login(Request $request)
     {
         $data = Validator::make($request->all(), [

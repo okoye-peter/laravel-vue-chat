@@ -1,4 +1,4 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+<!-- <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
@@ -62,4 +62,60 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# laravel-vue-chat
+# laravel-vue-chat -->
+
+# Chat App with Laravel and Vue
+<p>This is a chat app built with laravel, vue js and pusher</p>
+<p>here is a screen shot of the app</p>
+<p><img src="./public/images/chatapp.png" /> </p>
+the following prerequiste required to run the app
+<ul>
+    <li>Php</li>
+    <li>Mysql</li>
+    <li>composer</li>
+    <li>node</li>
+</ul>
+steps to get it up and running
+run the code below in your terminal to clone the app
+<p>
+    <pre>
+        <code>git clone https://github.com/okoye-peter/laravel-vue-chat.git</code>
+    </pre>
+</p>
+after cloning the app cd the into the app folder and run the code
+<p>
+    <pre>
+        <code>composer install</code>
+    </pre>
+</p>
+visit this link <a href="https://pusher.com/" target="__blank" >pusher</a> to set up your pusher account
+after setting up your pusher account, get the following credentials and put it into your env file
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_APP_CLUSTER=
+then run the following command in your terminal
+ <p>
+    <pre>
+        <code>npm install && npm run dev</code>
+    </pre>
+</p>
+once you are done, run you migrations
+<p>
+    <pre>
+        <code>php artisan migrate</code>
+    </pre>
+</p>
+run this command to setup your passport encryption keys
+<p>
+    <pre>
+        <code>php artisan passport:install</code>
+    </pre>
+</p>
+run this code to start up your local server
+<p>
+    <pre>
+        <code>php artisan serve</code>
+    </pre>
+</p>
+then copy then visit this url <pre>127.0.0.1:8000</pre> to see your app up and running!!!!!

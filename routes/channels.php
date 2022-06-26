@@ -19,13 +19,5 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 });
 
 Broadcast::channel('chat.room.{id}', function ($user, $id) {
-    // return Auth::check();
     return $user;
-    // return true;
 });
-// Broadcast::channel('login', function ($user) {
-//     return true;
-// });
-// Broadcast::channel('register', function ($user) {
-//     return true;
-// });

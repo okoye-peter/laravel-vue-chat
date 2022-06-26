@@ -33,53 +33,7 @@ export default {
     };
   },
   async created() {
-    await this.getChats();
-    Echo.channel('login').listen('LoginEvent', (data) => {
-      if(this.getAuthenticatedUser.id != data.user.id){
-        this.updateUser(data.user);
-      }
-    });
-    Echo.channel('register').listen('NewRegistrationEvent', (data) => {
-      this.addUser(data.user);
-    });
-    if (this.getAuthenticatedUser) {
-      Echo.join(`chat.room.${this.getAuthenticatedUser.id}`)
-        .listen('NewMessageEvent', (data)=>{
-            let user = this.getAuthenticatedUser;
-            // new message handling
-            if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
-              this.saveNewMessage(data.chat);
-              if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
-                this.markAsRead(this.friendId);
-              }else{
-                this.emitter.emit('newMessage',data.chat);
-              }
-            }
-            // this.handleIncomingMessages(event.message);
-            console.log('NewMessageEvent',data);
-        })
-        .listenForWhisper('typing', response =>{ 
-            // this.typing = true;
-            // if (this.typingTimer) {
-            //     clearTimeout(this.typingTimer);
-            // }
-            // this.typingTimer = setTimeout(()=>{
-            //     this.typing = false
-            // }, 3000)
-            console.log('typing',response);
-        });
-      // this.loginChannel.listen("LoginEvent", (data) => {
-      //   if (this.getAuthenticatedUser.id != data.user.id) {
-      //     this.updateUser(data.user);
-      //   }
-      // });
-      // this.registrationChannel = Echo.private(
-      //   `user.${this.getAuthenticatedUser.id}`
-      // );
-      // this.registrationChannel.listen("NewRegistrationEvent", (data) => {
-      //   this.addUser(data.user);
-      // });
-    }
+    await this.getChats(); 
     // Echo.join(`chat-room.${this.getAuthenticatedUser.id}`)
     // .here(users => {
     //     console.log('here',users);
@@ -171,6 +125,47 @@ export default {
     this.emitter.on('selectUser',id=>{
       this.friendId = id;
     });
+    setTimeout(()=> {
+      
+    },3500);
+    Echo.channel('login').listen('LoginEvent', (data) => {
+      if(this.getAuthenticatedUser.id != data.user.id){
+        this.updateUser(data.user);
+      }
+    });
+    Echo.channel('register').listen('NewRegistrationEvent', (data) => {
+      this.addUser(data.user);
+    });
+  },
+  watch:{
+    getAuthenticatedUser(newVal){
+      if(Object.keys(newVal).length > 0){
+        Echo.join(`chat.room.${this.getAuthenticatedUser.id}`)
+        .listen('NewMessageEvent', (data)=>{
+            let user = this.getAuthenticatedUser;
+            // new message handling
+            if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+              this.saveNewMessage(data.chat);
+              if(parseInt(this.friendId) === parseInt(data.chat.user_id)){
+                this.markAsRead(this.friendId);
+              }else{
+                this.emitter.emit('newMessage',data.chat);
+              }
+            }
+            // this.handleIncomingMessages(event.message);
+        })
+        .listenForWhisper('typing', response =>{ 
+            // this.typing = true;
+            // if (this.typingTimer) {
+            //     clearTimeout(this.typingTimer);
+            // }
+            // this.typingTimer = setTimeout(()=>{
+            //     this.typing = false
+            // }, 3000)
+            console.log('typing',response);
+        });
+      }
+    }
   }
 };
 </script>
