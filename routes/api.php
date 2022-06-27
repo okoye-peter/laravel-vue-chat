@@ -6,6 +6,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\PasswordResetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +22,12 @@ use App\Http\Controllers\ChatController;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('/register', [RegistrationController::class, 'register']);
-Route::post('/login', [LoginController::class, 'login']);
+Route::group(['middleware' => 'guest'], function(){
+    Route::post('/register', [RegistrationController::class, 'register']);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/send-reset-link', [PasswordResetController::class, 'sendResetLink']);
+    Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
+});
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::get('/users/profile', [UserController::class, 'getUser']);

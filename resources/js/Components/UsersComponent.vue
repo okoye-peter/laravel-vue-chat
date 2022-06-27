@@ -44,7 +44,7 @@
             ><i class="fa fa-instagram fa-fw" aria-hidden="true"></i
           ></label>
           <input name="twitter" type="text" :value="user.username" />
-          <button        
+          <button  :disabled="loading"       
             class="bg-red-500 text-white px-4 py-2 rounded-full w-full"
             @click="Logout"
 
@@ -97,6 +97,7 @@ export default {
             user: {},
             friends: [],
             query: "",
+            loading: false,
         }
     },
     async created(){

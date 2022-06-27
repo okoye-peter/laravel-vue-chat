@@ -107,7 +107,7 @@
           <router-link :to="{name: 'Login'}" class="ml-8 underline text-blue-400">Sign In</router-link>
         </p>
         <div class="flex md:justify-center">
-          <button class="
+          <button :disabled="loading" class="
               bg-blue-600
               hover:bg-blue-700
               focus:outline-none
@@ -146,7 +146,7 @@ export default {
       const form = document.registrationForm;
       const data = new FormData(form);
       this.axios
-        .post("/api/register", data)
+        .post(process.env.MIX_API_URL + "register", data)
         .then(res => {
           this.$swal({
             title: "Congratulations!",

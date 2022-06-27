@@ -22,17 +22,17 @@ const chats = {
   },
   actions: {
     async getChats({ commit }) {
-      await axios.get("/api/chats").then((response) => {
+      await axios.get(process.env.MIX_API_URL + "chats").then((response) => {
         commit("setChats", response.data.chat);  
       });
     },
     async sendMessage({ commit }, data, headers = {}) {
-      await axios.post("/api/chats/create", data, headers).then((response) => {
+      await axios.post(process.env.MIX_API_URL + "chats/create", data, headers).then((response) => {
         commit("addToChat", response.data.chat);
       });
     },
     async markChatsAsRead({ commit }, data) {
-      await axios.get(`/api/chats/${data}`).then((response) => {
+      await axios.get(process.env.MIX_API_URL + `chats/${data}`).then((response) => {
         if (response.status === 204) {
           commit("updateChat", response.data);
           commit("users/updateUserUnread",{id: data,unread: 0},{ root: true });

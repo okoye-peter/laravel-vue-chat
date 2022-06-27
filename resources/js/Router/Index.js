@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import Register from "../Components/RegistrationComponent.vue";
 import Login from "../Components/LoginComponent.vue";
 import Chats from "../Components/ChatsComponent.vue";
+import RequestPasswordResetLink from "../Components/RequestPasswordResetLink.vue";
+import ResetPassword from "../Components/ResetPassword.vue";
 
 const routes = [
   {
@@ -16,6 +18,22 @@ const routes = [
     path: "/Login",
     name: "Login",
     component: Login,
+    meta: {
+      requireAuthentication: false
+    }
+  },
+  {
+    path: "/Forgot_Password",
+    name: "RequestPasswordResetLink",
+    component: RequestPasswordResetLink,
+    meta: {
+      requireAuthentication: false
+    }
+  },
+  {
+    path: "/reset_password/:token",
+    name: "ResetPassword",
+    component: ResetPassword,
     meta: {
       requireAuthentication: false
     }

@@ -68,14 +68,14 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 <p>This is a chat app built with laravel, vue js and pusher</p>
 <p>here is a screen shot of the app</p>
 <p><img src="./public/images/chatapp.png" /> </p>
-the following prerequiste required to run the app
+the following prerequiste are required to run the app
 <ul>
     <li>Php</li>
     <li>Mysql</li>
     <li>composer</li>
     <li>node</li>
 </ul>
-steps to get it up and running
+steps to get it up and running <br/>
 run the code below in your terminal to clone the app
 <pre>
     <code>git clone https://github.com/okoye-peter/laravel-vue-chat.git</code>
@@ -84,12 +84,12 @@ after cloning the app cd the into the app folder and run the code
 <pre>
     <code>composer install</code>
 </pre>
-visit this link <a href="https://pusher.com/" target="__blank" >pusher</a> to set up your pusher account
-after setting up your pusher account, get the following credentials and put it into your env file
-PUSHER_APP_ID=
-PUSHER_APP_KEY=
-PUSHER_APP_SECRET=
-PUSHER_APP_CLUSTER=
+visit this link <a href="https://pusher.com/" target="__blank">pusher</a> to set up your pusher account<br/>
+after setting up your pusher account, get the following credentials and put it into your env file<br/>
+PUSHER_APP_ID=</br>
+PUSHER_APP_KEY=</br>
+PUSHER_APP_SECRET=</br>
+PUSHER_APP_CLUSTER=</br>
 then run the following command in your terminal
 <pre>
     <code>npm install && npm run dev</code>

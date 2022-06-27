@@ -16,7 +16,7 @@
 import ListUsers from "./UsersComponent.vue";
 import Messages from "./MessagesComponent.vue";
 import Details from "./UserDetailsComponent.vue";
-import { mapActions,mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
@@ -26,14 +26,11 @@ export default {
   },
   data() {
     return {
-      chatChannel: "",
-      registrationChannel: "",
-      loginChannel: "",
       friendId: 0,
     };
   },
   async created() {
-    await this.getChats(); 
+    await this.getChats();
     // Echo.join(`chat-room.${this.getAuthenticatedUser.id}`)
     // .here(users => {
     //     console.log('here',users);
@@ -85,16 +82,16 @@ export default {
     // this.loginChannel = pusher.subscribe("login");
 
     // this.chatChannel.bind("App\\Events\\MessageEvent", (data) => {
-      // let user = this.getAuthenticatedUser;
-      // // new message handling
-      // if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
-      //   this.saveNewMessage(data.chat);
-      //   if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
-      //     this.markAsRead(this.friendId);
-      //   }else{
-      //     this.emitter.emit('newMessage',data.chat);
-      //   }
-      // }
+    // let user = this.getAuthenticatedUser;
+    // // new message handling
+    // if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+    //   this.saveNewMessage(data.chat);
+    //   if(parseInt(this.friendId) === parseInt(data.chat.receiver_id)){
+    //     this.markAsRead(this.friendId);
+    //   }else{
+    //     this.emitter.emit('newMessage',data.chat);
+    //   }
+    // }
     // });
     // // handling new user registration
     // this.registrationChannel.bind("App\\Events\\RegistrationEvent", (data) => {
@@ -102,9 +99,9 @@ export default {
     // });
     // // handling another user login broadcast
     // this.loginChannel.bind("App\\Events\\LoginEvent", (data) => {
-      // if(this.getAuthenticatedUser.id != data.user.id){
-      //   this.addUser(data.user);
-      // }
+    // if(this.getAuthenticatedUser.id != data.user.id){
+    //   this.addUser(data.user);
+    // }
     // });
   },
   methods: {
@@ -116,20 +113,20 @@ export default {
       markAsRead: "chats/markChatsAsRead"
     }),
   },
-  computed:{
+  computed: {
     ...mapGetters({
       getAuthenticatedUser: "users/getAuthenticatedUser",
     }),
   },
-  mounted(){
-    this.emitter.on('selectUser',id=>{
+  mounted() {
+    this.emitter.on('selectUser', id => {
       this.friendId = id;
     });
-    setTimeout(()=> {
-      
-    },3500);
+    setTimeout(() => {
+
+    }, 3500);
     Echo.channel('login').listen('LoginEvent', (data) => {
-      if(this.getAuthenticatedUser.id != data.user.id){
+      if (this.getAuthenticatedUser.id != data.user.id) {
         this.updateUser(data.user);
       }
     });
@@ -137,24 +134,24 @@ export default {
       this.addUser(data.user);
     });
   },
-  watch:{
-    getAuthenticatedUser(newVal){
-      if(Object.keys(newVal).length > 0){
+  watch: {
+    getAuthenticatedUser(newVal) {
+      if (Object.keys(newVal).length > 0) {
         Echo.join(`chat.room.${this.getAuthenticatedUser.id}`)
-        .listen('NewMessageEvent', (data)=>{
+          .listen('NewMessageEvent', (data) => {
             let user = this.getAuthenticatedUser;
             // new message handling
-            if(parseInt(data.chat.receiver_id) === parseInt(user.id)){
+            if (parseInt(data.chat.receiver_id) === parseInt(user.id)) {
               this.saveNewMessage(data.chat);
-              if(parseInt(this.friendId) === parseInt(data.chat.user_id)){
+              if (parseInt(this.friendId) === parseInt(data.chat.user_id)) {
                 this.markAsRead(this.friendId);
-              }else{
-                this.emitter.emit('newMessage',data.chat);
+              } else {
+                this.emitter.emit('newMessage', data.chat);
               }
             }
             // this.handleIncomingMessages(event.message);
-        })
-        .listenForWhisper('typing', response =>{ 
+          })
+          .listenForWhisper('typing', response => {
             // this.typing = true;
             // if (this.typingTimer) {
             //     clearTimeout(this.typingTimer);
@@ -162,12 +159,13 @@ export default {
             // this.typingTimer = setTimeout(()=>{
             //     this.typing = false
             // }, 3000)
-            console.log('typing',response);
-        });
+            console.log('typing', response);
+          });
       }
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+</style>

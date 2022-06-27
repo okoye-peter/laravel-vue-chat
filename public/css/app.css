@@ -534,6 +534,12 @@ video {
 .col-start-2 {
   grid-column-start: 2;
 }
+.col-start-3 {
+  grid-column-start: 3;
+}
+.col-start-4 {
+  grid-column-start: 4;
+}
 .col-end-5 {
   grid-column-end: 5;
 }
@@ -580,6 +586,9 @@ video {
 .inline-flex {
   display: inline-flex;
 }
+.table {
+  display: table;
+}
 .grid {
   display: grid;
 }
@@ -603,6 +612,9 @@ video {
 }
 .w-36 {
   width: 9rem;
+}
+.w-48 {
+  width: 12rem;
 }
 .w-full {
   width: 100%;
@@ -651,6 +663,9 @@ video {
 }
 .overflow-x-hidden {
   overflow-x: hidden;
+}
+.break-all {
+  word-break: break-all;
 }
 .rounded {
   border-radius: 0.25rem;
