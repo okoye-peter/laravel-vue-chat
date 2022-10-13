@@ -586,9 +586,6 @@ video {
 .inline-flex {
   display: inline-flex;
 }
-.table {
-  display: table;
-}
 .grid {
   display: grid;
 }
@@ -663,9 +660,6 @@ video {
 }
 .overflow-x-hidden {
   overflow-x: hidden;
-}
-.break-all {
-  word-break: break-all;
 }
 .rounded {
   border-radius: 0.25rem;

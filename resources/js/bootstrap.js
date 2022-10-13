@@ -10,10 +10,10 @@ window._ = _;
 import axios from 'axios';
 window.axios = axios;
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-const token = localStorage.getItem('chatApp')
+// window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+let token = 'Bearer ' + window.localStorage.getItem("token") || ""
 if (token) {
-    window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 }
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

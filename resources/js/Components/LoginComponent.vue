@@ -59,7 +59,7 @@
                     <p class="col-start-2 text-sm ml-3 col-span-3">
                         Don't have an account ?
                         <router-link
-                            :to="{ name: 'Register' }"
+                            :to="{ path: '/register' }"
                             class="ml-8 underline text-blue-400"
                             >Sign Up</router-link
                         >
@@ -121,18 +121,22 @@ export default {
             if (this.remember_me) {
                 data.append("remember_me", this.remember_me);
             }
-            await this.login(data);
-            this.loading = false;
-            if (this.getStatus == 401) {
-                this.$swal({
-                    title: "error",
-                    text: "Invalid Credentials",
-                    icon: "error",
-                    button: "ok",
-                });
-            } else if (this.getStatus == 422) {
-                this.errors = this.validationErrors;
-            }
+            await this.login(data).then(res => {
+                this.$router.push({ path: "/chats" })
+            }).catch(err => {
+                if (this.getStatus == 401) {
+                    this.$swal({
+                        title: "error",
+                        text: "Invalid Credentials",
+                        icon: "error",
+                        button: "ok",
+                    });
+                } else if (this.getStatus == 422) {
+                    this.errors = this.validationErrors;
+                }
+            }).finally(() => {
+                this.loading = false;
+            });
         },
     },
 };

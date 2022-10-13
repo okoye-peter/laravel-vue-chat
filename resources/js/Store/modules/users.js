@@ -4,8 +4,8 @@ import router from '../../Router';
 export default {
   namespaced: true,
   state: {
-    users: null,
-    authenticatedUser: null,
+    users: [],
+    authenticatedUser: JSON.parse(window.localStorage.getItem("laravelVueChatAppUser")) || {},
     validationErrors: null,
     status: null,
   },
@@ -40,68 +40,85 @@ export default {
   },
   actions: {
     async fetchUsers({ commit,rootGetters }) {
-      await axios
-        .get("/api/users")
-        .then((res) => {
-          commit("setUsers", res.data.users);
-          let users = rootGetters["users/fetchUsers"];
-          users.forEach((user) => {
-            let data = {
-              id: user.id,
-              unread: rootGetters["chats/getUnreadChatsCount"](user.id),
-            };
-            commit("updateUserUnread", data);
+      return new Promise((resolve, reject) =>{
+        axios
+          .get(process.env.MIX_API_URL + "api/users")
+          .then((res) => {
+            commit("setUsers", res.data.users);
+            let users = rootGetters["users/fetchUsers"];
+            users.forEach((user) => {
+              let data = {
+                id: user.id,
+                unread: rootGetters["chats/getUnreadChatsCount"](user.id),
+              };
+              commit("updateUserUnread", data);
+            });
+            resolve({
+              status: true
+            })
+          })
+          .catch((err) => {
+            reject(err.response)
+            if (err.response && err.response.status == 401) {
+              commit("setStatus", err.response.status);
+              window.localStorage.removeItem("token");
+            }
           });
-        })
-        .catch((err) => {
-          if (err.response.status == 401) {
-            commit("setStatus", err.response.status);
-            window.localStorage.removeItem("chatApp");
-          }
-        });
+      })
+        
     },
     async fetchAuthenticatedUsers({ commit }) {
       await axios
-        .get("/api/users/profile")
+        .get(process.env.MIX_API_URL + "api/users/profile")
         .then((res) => {
           commit("setAuthenticatedUser", res.data);
         })
         .catch((err) => {
           if (err.response.status == 401) {
-            window.localStorage.removeItem("chatApp");
+            window.localStorage.removeItem("token");
             commit("setStatus", err.response.status);
           }
         });
     },
 
     async AuthenticateUser({ commit }, data) {
-      await axios
-        .post("/api/login", data)
-        .then((response) => {
-          window.localStorage.setItem("chatApp", response.data.token);
-          axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token
-          router.push({ name: "Chats" });
-        })
-        .catch((error) => {
-          console.log('err',error);
-          if (error.response.status == 401) {
-            commit("setStatus", 401);
-          } else {
-            if (error.response.status == 422) {
-              commit("setValidationError", error.response.data);
-              commit("setStatus", error.response.status);
+      return new Promise((resolve, reject) => {
+        axios
+          .post(process.env.MIX_API_URL + "api/login", data)
+          .then((response) => {
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("laravelVueChatAppUser", JSON.stringify(response.data.user));
+            commit("setAuthenticatedUser", response.data.user);
+            axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token
+            return resolve({
+              status: true,
+            })
+          })
+          .catch((error) => {
+            console.log('err',error);
+            if (error.response.status == 401) {
+              commit("setStatus", 401);
+              reject({
+                status: false,
+                msg: "something went wrong"
+              });
+            } else {
+              if (error.response.status == 422) {
+                commit("setValidationError", error.response.data);
+                commit("setStatus", error.response.status);
+              }
             }
-          }
-        });
+          });
+      })
     },
 
     async LogOut({ commit }) {
       await axios
-        .post("/api/logout")
+        .post(process.env.MIX_API_URL + "api/logout")
         .then((response) => {
           if (response.status == 200) {
             commit("setStatus", 200);
-            window.localStorage.removeItem("chatApp");
+            window.localStorage.removeItem("token");
             router.push({ name: "Login" });
           }
         })

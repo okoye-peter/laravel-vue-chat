@@ -8,14 +8,14 @@ import ResetPassword from "../Components/ResetPassword.vue";
 const routes = [
   {
     path: "/",
-    name: "Register",
+    name: "register",
     component: Register,
     meta: {
       requireAuthentication: false
     }
   },
   {
-    path: "/Login",
+    path: "/login",
     name: "Login",
     component: Login,
     meta: {
@@ -39,7 +39,7 @@ const routes = [
     }
   },
   {
-    path: "/Chats",
+    path: "/chats",
     name: "Chats",
     component: Chats,
     meta: {
@@ -61,11 +61,11 @@ router.beforeEach((to, from, next)=>{
   const requireAuthentication = to.matched.some(
     (record) => record.meta.requireAuthentication
   );
-  const isAuthenticated = window.localStorage.chatApp;
+  const isAuthenticated = window.localStorage.getItem("token");
   if(!requireAuthentication && isAuthenticated){
-    next('/Chats')
+    next('/chats')
   }else if(requireAuthentication && !isAuthenticated){
-    next('/Login')
+    next('/login')
   }else{
     next()
   }

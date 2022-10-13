@@ -146,7 +146,7 @@ export default {
       const form = document.registrationForm;
       const data = new FormData(form);
       this.axios
-        .post(process.env.MIX_API_URL + "register", data)
+        .post(process.env.MIX_API_URL + "api/register", data)
         .then(res => {
           this.$swal({
             title: "Congratulations!",
@@ -154,7 +154,7 @@ export default {
             icon: "success",
             button: "Thanks!",
           }).then(() => {
-            this.$router.push({ name: "Login" });
+            this.$router.push({ path: "/login" });
           });
         })
         .catch((error) => {
