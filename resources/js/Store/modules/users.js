@@ -8,6 +8,7 @@ export default {
     authenticatedUser: JSON.parse(window.localStorage.getItem("laravelVueChatAppUser")) || {},
     validationErrors: null,
     status: null,
+    token: window.localStorage.getItem("laravelVueChatAppToken") || ''
   },
   mutations: {
     setUsers(state, payload) {
@@ -15,6 +16,9 @@ export default {
     },
     setAuthenticatedUser(state, payload) {
       state.authenticatedUser = payload;
+    },
+    setToken(state, payload) {
+      state.token = payload;
     },
     setValidationError(state, payload) {
       state.validationErrors = payload;
@@ -86,9 +90,10 @@ export default {
         axios
           .post(process.env.MIX_API_URL + "api/login", data)
           .then((response) => {
-            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("laravelVueChatAppToken", response.data.token);
             localStorage.setItem("laravelVueChatAppUser", JSON.stringify(response.data.user));
             commit("setAuthenticatedUser", response.data.user);
+            commit("setToken", response.data.token);
             axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token
             return resolve({
               status: true,
@@ -118,7 +123,7 @@ export default {
         .then((response) => {
           if (response.status == 200) {
             commit("setStatus", 200);
-            window.localStorage.removeItem("token");
+            window.localStorage.removeItem("laravelVueChatAppToken");
             router.push({ name: "Login" });
           }
         })

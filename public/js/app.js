@@ -20032,6 +20032,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _context.next = 6;
                 return _this.login(data).then(function (res) {
+                  console.log('res', res);
+
                   _this.$router.push({
                     path: "/chats"
                   });
@@ -21679,7 +21681,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" logged in user profile "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
     "class": "profile-img online",
-    src: $data.user.image,
+    src: _ctx.getAuthenticatedUser.image,
     alt: ""
   }, null, 8
   /* PROPS */
@@ -21836,13 +21838,16 @@ router.beforeEach(function (to, from, next) {
   var requireAuthentication = to.matched.some(function (record) {
     return record.meta.requireAuthentication;
   });
-  var isAuthenticated = window.localStorage.getItem("token");
+  var isAuthenticated = window.localStorage.getItem("laravelVueChatAppToken");
 
   if (!requireAuthentication && isAuthenticated) {
+    console.log('route', 'isAuthent');
     next('/chats');
   } else if (requireAuthentication && !isAuthenticated) {
     next('/login');
+    console.log('route', 'notAuthent');
   } else {
+    console.log('route', 'Authent');
     next();
   }
 });
@@ -22046,7 +22051,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     users: [],
     authenticatedUser: JSON.parse(window.localStorage.getItem("laravelVueChatAppUser")) || {},
     validationErrors: null,
-    status: null
+    status: null,
+    token: window.localStorage.getItem("laravelVueChatAppToken") || ''
   },
   mutations: {
     setUsers: function setUsers(state, payload) {
@@ -22054,6 +22060,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     setAuthenticatedUser: function setAuthenticatedUser(state, payload) {
       state.authenticatedUser = payload;
+    },
+    setToken: function setToken(state, payload) {
+      state.token = payload;
     },
     setValidationError: function setValidationError(state, payload) {
       state.validationErrors = payload;
@@ -22158,9 +22167,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 commit = _ref3.commit;
                 return _context3.abrupt("return", new Promise(function (resolve, reject) {
                   axios.post("https://laravel-vue-chat.test/" + "api/login", data).then(function (response) {
-                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("laravelVueChatAppToken", response.data.token);
                     localStorage.setItem("laravelVueChatAppUser", JSON.stringify(response.data.user));
                     commit("setAuthenticatedUser", response.data.user);
+                    commit("setToken", response.data.token);
                     axios.defaults.headers.common['Authorization'] = 'Bearer ' + response.data.token;
                     return resolve({
                       status: true
@@ -22203,7 +22213,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return axios.post("https://laravel-vue-chat.test/" + "api/logout").then(function (response) {
                   if (response.status == 200) {
                     commit("setStatus", 200);
-                    window.localStorage.removeItem("token");
+                    window.localStorage.removeItem("laravelVueChatAppToken");
                     _Router__WEBPACK_IMPORTED_MODULE_0__["default"].push({
                       name: "Login"
                     });
@@ -22322,12 +22332,12 @@ window._ = (lodash__WEBPACK_IMPORTED_MODULE_0___default());
  */
 
 
-window.axios = (axios__WEBPACK_IMPORTED_MODULE_1___default()); // window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-
-var token = 'Bearer ' + window.localStorage.getItem("token") || 0;
+window.axios = (axios__WEBPACK_IMPORTED_MODULE_1___default());
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+var token = 'Bearer ' + window.localStorage.getItem("laravelVueChatAppToken") || 0;
 
 if (token) {
-  (axios__WEBPACK_IMPORTED_MODULE_1___default().defaults.headers.common.Authorization) = 'Bearer ' + token;
+  (axios__WEBPACK_IMPORTED_MODULE_1___default().defaults.headers.common.Authorization) = token;
 }
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

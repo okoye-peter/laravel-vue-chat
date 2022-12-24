@@ -122,6 +122,7 @@ export default {
                 data.append("remember_me", this.remember_me);
             }
             await this.login(data).then(res => {
+                console.log('res', res)
                 this.$router.push({ path: "/chats" })
             }).catch(err => {
                 if (this.getStatus == 401) {

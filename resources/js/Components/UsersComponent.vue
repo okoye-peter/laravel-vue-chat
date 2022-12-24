@@ -3,7 +3,7 @@
         <!-- logged in user profile -->
         <div class="profile">
             <div class="wrap">
-                <img class="profile-img online" :src="user.image" alt="" />
+                <img class="profile-img online" :src="getAuthenticatedUser.image" alt="" />
                 <p class="text-white">{{ getAuthenticatedUser.name }}</p>
 
                 <i

@@ -47,8 +47,8 @@ export default {
       this.emitter.on("selectUser", id => {
         this.user = this.getActiveUser(id);
       });
-  },
 
+  },
   computed: {
     ...mapGetters({
       getActiveUser: "users/fetchAUserDetails"
