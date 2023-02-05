@@ -130,7 +130,6 @@ export default {
     mounted(){
         this.email = this.$route.query.email;
         this.token = this.$route.params.token;
-        console.log(process.env.MIX_API_URL);
     }
 }
 </script>

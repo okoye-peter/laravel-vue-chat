@@ -15,6 +15,8 @@ class UserController extends Controller
 
     public function getUser(Request $request)
     {
-        return $request->user();
+        $user = $request->user();
+        auth()->guard()->login($user);
+        return $user;
     }
 }

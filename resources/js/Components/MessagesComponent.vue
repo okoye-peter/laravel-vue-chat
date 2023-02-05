@@ -58,6 +58,7 @@ export default {
             this.friend = this.getActiveUser(id);
             this.markAsRead(id);
         });
+    
     },
     computed: {
         ...mapGetters({
@@ -117,7 +118,7 @@ export default {
 <style>
 .content {
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     overflow: hidden;
     position: relative;
 }

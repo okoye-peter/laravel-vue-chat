@@ -137,7 +137,6 @@ export default {
         // await this.setAuthenticatedUser();
         await this.getAllUsers()
             .then((res) => {
-                console.log(res);
                 this.friends = this.sortUsersList(this.getUsers);
             })
             .catch((err) => {
@@ -172,15 +171,13 @@ export default {
             });
         }, 5000);
         this.emitter.on("newMessage", (chat) => {
-            this.friends.find((friend) => friend.id == chat.user_id).unread =
-                this.getUnreadChatsCount(chat.user_id);
+            this.friends.find((friend) => friend.id == chat.user_id).unread = this.getUnreadChatsCount(chat.user_id);
             this.friends = this.sortUsersList(this.getUsers);
         });
     },
     methods: {
         ...mapActions({
             getAllUsers: "users/fetchUsers",
-            // setAuthenticatedUser: "users/fetchAuthenticatedUsers",
             Logout: "users/LogOut",
         }),
         chooseActiveUser(id) {

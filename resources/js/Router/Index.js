@@ -63,13 +63,10 @@ router.beforeEach((to, from, next)=>{
   );
   const isAuthenticated = window.localStorage.getItem("laravelVueChatAppToken");
   if(!requireAuthentication && isAuthenticated){
-    console.log('route', 'isAuthent')
     next('/chats')
   }else if(requireAuthentication && !isAuthenticated){
     next('/login')
-    console.log('route', 'notAuthent')
   }else{
-    console.log('route', 'Authent')
     next()
   }
 })

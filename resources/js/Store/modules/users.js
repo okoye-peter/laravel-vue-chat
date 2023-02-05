@@ -40,6 +40,7 @@ export default {
     },
     updateUserUnread(state, payload) {
       state.users.find((user) => user.id === payload.id).unread = payload.unread;
+      console.log('users/updateUserUnread', payload)
     }
   },
   actions: {

@@ -19894,6 +19894,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this = this;
 
     return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+      var pusher;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -19902,6 +19903,44 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return _this.getChats();
 
             case 2:
+              pusher = new Pusher("e1988fa3230eb2bd2e84", {
+                cluster: "eu",
+                encrypted: true
+              }); // pusher channels
+
+              _this.chatChannel = pusher.subscribe("chat-room");
+              _this.registrationChannel = pusher.subscribe("register");
+              _this.loginChannel = pusher.subscribe("login");
+
+              _this.chatChannel.bind("App\\Events\\NewMessageEvent", function (data) {
+                var user = _this.getAuthenticatedUser; // new message handling
+
+                if (parseInt(data.chat.receiver_id) === parseInt(user.id)) {
+                  if (parseInt(_this.friendId) === parseInt(data.chat.user_id)) {
+                    _this.markAsRead(_this.friendId); // this.$store.commit("users/updateUserUnread",{id: data.chat.user_id,unread: 0})
+
+                  } else {
+                    _this.saveNewMessage(data.chat);
+
+                    _this.emitter.emit('newMessage', data.chat);
+                  }
+                }
+              }); // // handling new user registration
+
+
+              _this.registrationChannel.bind("App\\Events\\RegistrationEvent", function (data) {
+                _this.addUser(data.user);
+              }); // handling another user login broadcast
+
+
+              _this.loginChannel.bind("App\\Events\\LoginEvent", function (data) {
+                if (_this.getAuthenticatedUser.id != data.user.id) {
+                  // this.addUser(data.user);
+                  _this.updateUser(data.user);
+                }
+              });
+
+            case 9:
             case "end":
               return _context.stop();
           }
@@ -19926,45 +19965,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       _this2.friendId = id;
     });
     setTimeout(function () {}, 3500);
-    Echo.channel('login').listen('LoginEvent', function (data) {
-      if (_this2.getAuthenticatedUser.id != data.user.id) {
-        _this2.updateUser(data.user);
-      }
-    });
-    Echo.channel('register').listen('NewRegistrationEvent', function (data) {
-      _this2.addUser(data.user);
-    });
-  },
-  watch: {
-    getAuthenticatedUser: function getAuthenticatedUser(newVal) {
-      var _this3 = this;
-
-      if (Object.keys(newVal).length > 0) {
-        Echo.join("chat.room.".concat(this.getAuthenticatedUser.id)).listen('NewMessageEvent', function (data) {
-          var user = _this3.getAuthenticatedUser; // new message handling
-
-          if (parseInt(data.chat.receiver_id) === parseInt(user.id)) {
-            _this3.saveNewMessage(data.chat);
-
-            if (parseInt(_this3.friendId) === parseInt(data.chat.user_id)) {
-              _this3.markAsRead(_this3.friendId);
-            } else {
-              _this3.emitter.emit('newMessage', data.chat);
-            }
-          } // this.handleIncomingMessages(event.message);
-
-        }).listenForWhisper('typing', function (response) {
-          // this.typing = true;
-          // if (this.typingTimer) {
-          //     clearTimeout(this.typingTimer);
-          // }
-          // this.typingTimer = setTimeout(()=>{
-          //     this.typing = false
-          // }, 3000)
-          console.log('typing', response);
-        });
-      }
-    }
   }
 });
 
@@ -20032,8 +20032,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _context.next = 6;
                 return _this.login(data).then(function (res) {
-                  console.log('res', res);
-
                   _this.$router.push({
                     path: "/chats"
                   });
@@ -20345,7 +20343,6 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.email = this.$route.query.email;
     this.token = this.$route.params.token;
-    console.log("https://laravel-vue-chat.test/");
   }
 });
 
@@ -20446,7 +20443,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               _context.next = 3;
               return _this.getAllUsers().then(function (res) {
-                console.log(res);
                 _this.friends = _this.sortUsersList(_this.getUsers);
               })["catch"](function (err) {
                 if (_this.getStatus == 401) {
@@ -20496,7 +20492,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   methods: _objectSpread(_objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_2__.mapActions)({
     getAllUsers: "users/fetchUsers",
-    // setAuthenticatedUser: "users/fetchAuthenticatedUsers",
     Logout: "users/LogOut"
   })), {}, {
     chooseActiveUser: function chooseActiveUser(id) {
@@ -21841,13 +21836,10 @@ router.beforeEach(function (to, from, next) {
   var isAuthenticated = window.localStorage.getItem("laravelVueChatAppToken");
 
   if (!requireAuthentication && isAuthenticated) {
-    console.log('route', 'isAuthent');
     next('/chats');
   } else if (requireAuthentication && !isAuthenticated) {
     next('/login');
-    console.log('route', 'notAuthent');
   } else {
-    console.log('route', 'Authent');
     next();
   }
 });
@@ -21954,13 +21946,12 @@ var chats = {
               case 0:
                 commit = _ref2.commit;
                 headers = _arguments.length > 2 && _arguments[2] !== undefined ? _arguments[2] : {};
-                console.log('chat', data);
-                _context2.next = 5;
+                _context2.next = 4;
                 return axios.post("https://laravel-vue-chat.test/" + "api/chats/create", data, headers).then(function (response) {
                   commit("addToChat", response.data.chat);
                 });
 
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
@@ -22088,6 +22079,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       state.users.find(function (user) {
         return user.id === payload.id;
       }).unread = payload.unread;
+      console.log('users/updateUserUnread', payload);
     }
   },
   actions: {
@@ -22456,7 +22448,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.content {\n    width: 100%;\n    height: 100%;\n    overflow: hidden;\n    position: relative;\n}\n.content .messages {\n    height: auto;\n    min-height: calc(100% - 93px);\n    max-height: calc(100% - 93px);\n    overflow-y: scroll;\n    overflow-x: hidden;\n}\n.content .messages::-webkit-scrollbar {\n    width: 8px;\n    background: rgba(0, 0, 0, 0);\n}\n.content .messages::-webkit-scrollbar-thumb {\n    background-color: rgba(0, 0, 0, 0.3);\n}\n.content .messages ul li {\n    margin: 15px 15px 5px 15px;\n    width: calc(100% - 25px);\n    font-size: 0.8em;\n    display: flex;\n    align-items: center;\n}\n.content .messages ul li:nth-last-child(1) {\n    margin-bottom: 20px;\n}\n.content .messages ul li.sent img {\n    margin: 6px 8px 0 0;\n}\n.content .messages ul li.sent p {\n    background: #435f7a;\n    color: #f5f5f5;\n}\n.content .messages ul li.replies {\n    justify-content: flex-start;\n    flex-direction: row-reverse;\n}\n.content .messages ul li.replies p {\n    background: #f5f5f5;\n    margin-right: 0.5em;\n}\n.content .messages ul li.replies.image,\n.content .messages ul li.sent.image {\n    align-items: flex-start;\n}\n.content .messages ul li img {\n    width: 35px;\n    height: 35px;\n    border-radius: 50%;\n}\n.content .messages ul li p {\n    display: inline-block;\n    padding: 10px 15px;\n    border-radius: 20px;\n    max-width: 205px;\n    line-height: 130%;\n    font-size: 12px;\n    text-align: left;\n}\n.content .messages ul li.replies.image p,\n.content .messages ul li.sent.image p {\n    padding: 0.5em;\n    border-radius: 0.4em;\n}\n.content .messages ul li.replies.image p img,\n.content .messages ul li.sent.image p img {\n    width: 15em;\n    height: 15em;\n    border-radius: 0;\n}\n.content .message-input {\n    position: absolute;\n    bottom: 0;\n    width: 100%;\n    z-index: 99;\n}\n.content .message-input .wrap {\n    position: relative;\n}\n.content .message-input .wrap input {\n    font-family: \"proxima-nova\", \"Source Sans Pro\", sans-serif;\n    float: left;\n    border: none;\n    width: calc(100% - 90px);\n    padding: 11px 32px 10px 8px;\n    font-size: 0.8em;\n    color: #32465a;\n}\n.content .message-input .wrap input:focus {\n    outline: none;\n}\n.content .message-input .wrap .attachment {\n    position: absolute;\n    right: 60px;\n    z-index: 4;\n    margin-top: 10px;\n    font-size: 1.1em;\n    color: #435f7a;\n    opacity: 0.5;\n    cursor: pointer;\n}\n.content .message-input .wrap .attachment:hover {\n    opacity: 1;\n}\n.content .message-input .wrap input[type=file] {\n    display: none;\n}\n.content .message-input .wrap button {\n    float: right;\n    border: none;\n    width: 50px;\n    padding: 12px 0;\n    cursor: pointer;\n    background: #32465a;\n    color: #f5f5f5;\n}\n.content .message-input .wrap button:hover {\n    background: #435f7a;\n}\n.content .message-input .wrap button:focus {\n    outline: none;\n}\n.content .preview_wrapper {\n    position: fixed;\n    top: 0;\n    left: 0;\n    height: 100vh;\n    width: 100vw;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background: rgba(0, 0, 0, 0.5);\n    transition: all 0.35s ease-in-out;\n    transform-origin: 50% 50%;\n    overflow: hidden;\n    transform: scale(0);\n}\n.content .preview_wrapper.active {\n    transform: scale(1);\n}\n.content .preview_wrapper .preview_container img {\n    width: 30em;\n    height: 30em;\n    background: white;\n    padding: 0.3em;\n}\n.content .preview_wrapper .preview_container button {\n    width: 6em;\n    color: white;\n    border-radius: 0.5em;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.content {\n    width: 100%;\n    /* height: 100%; */\n    overflow: hidden;\n    position: relative;\n}\n.content .messages {\n    height: auto;\n    min-height: calc(100% - 93px);\n    max-height: calc(100% - 93px);\n    overflow-y: scroll;\n    overflow-x: hidden;\n}\n.content .messages::-webkit-scrollbar {\n    width: 8px;\n    background: rgba(0, 0, 0, 0);\n}\n.content .messages::-webkit-scrollbar-thumb {\n    background-color: rgba(0, 0, 0, 0.3);\n}\n.content .messages ul li {\n    margin: 15px 15px 5px 15px;\n    width: calc(100% - 25px);\n    font-size: 0.8em;\n    display: flex;\n    align-items: center;\n}\n.content .messages ul li:nth-last-child(1) {\n    margin-bottom: 20px;\n}\n.content .messages ul li.sent img {\n    margin: 6px 8px 0 0;\n}\n.content .messages ul li.sent p {\n    background: #435f7a;\n    color: #f5f5f5;\n}\n.content .messages ul li.replies {\n    justify-content: flex-start;\n    flex-direction: row-reverse;\n}\n.content .messages ul li.replies p {\n    background: #f5f5f5;\n    margin-right: 0.5em;\n}\n.content .messages ul li.replies.image,\n.content .messages ul li.sent.image {\n    align-items: flex-start;\n}\n.content .messages ul li img {\n    width: 35px;\n    height: 35px;\n    border-radius: 50%;\n}\n.content .messages ul li p {\n    display: inline-block;\n    padding: 10px 15px;\n    border-radius: 20px;\n    max-width: 205px;\n    line-height: 130%;\n    font-size: 12px;\n    text-align: left;\n}\n.content .messages ul li.replies.image p,\n.content .messages ul li.sent.image p {\n    padding: 0.5em;\n    border-radius: 0.4em;\n}\n.content .messages ul li.replies.image p img,\n.content .messages ul li.sent.image p img {\n    width: 15em;\n    height: 15em;\n    border-radius: 0;\n}\n.content .message-input {\n    position: absolute;\n    bottom: 0;\n    width: 100%;\n    z-index: 99;\n}\n.content .message-input .wrap {\n    position: relative;\n}\n.content .message-input .wrap input {\n    font-family: \"proxima-nova\", \"Source Sans Pro\", sans-serif;\n    float: left;\n    border: none;\n    width: calc(100% - 90px);\n    padding: 11px 32px 10px 8px;\n    font-size: 0.8em;\n    color: #32465a;\n}\n.content .message-input .wrap input:focus {\n    outline: none;\n}\n.content .message-input .wrap .attachment {\n    position: absolute;\n    right: 60px;\n    z-index: 4;\n    margin-top: 10px;\n    font-size: 1.1em;\n    color: #435f7a;\n    opacity: 0.5;\n    cursor: pointer;\n}\n.content .message-input .wrap .attachment:hover {\n    opacity: 1;\n}\n.content .message-input .wrap input[type=file] {\n    display: none;\n}\n.content .message-input .wrap button {\n    float: right;\n    border: none;\n    width: 50px;\n    padding: 12px 0;\n    cursor: pointer;\n    background: #32465a;\n    color: #f5f5f5;\n}\n.content .message-input .wrap button:hover {\n    background: #435f7a;\n}\n.content .message-input .wrap button:focus {\n    outline: none;\n}\n.content .preview_wrapper {\n    position: fixed;\n    top: 0;\n    left: 0;\n    height: 100vh;\n    width: 100vw;\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    background: rgba(0, 0, 0, 0.5);\n    transition: all 0.35s ease-in-out;\n    transform-origin: 50% 50%;\n    overflow: hidden;\n    transform: scale(0);\n}\n.content .preview_wrapper.active {\n    transform: scale(1);\n}\n.content .preview_wrapper .preview_container img {\n    width: 30em;\n    height: 30em;\n    background: white;\n    padding: 0.3em;\n}\n.content .preview_wrapper .preview_container button {\n    width: 6em;\n    color: white;\n    border-radius: 0.5em;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

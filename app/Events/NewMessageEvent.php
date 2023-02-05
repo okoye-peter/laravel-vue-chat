@@ -33,6 +33,6 @@ class NewMessageEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('chat.room.'.$this->chat->receiver_id);
+        return new Channel('chat-room');
     }
 }
