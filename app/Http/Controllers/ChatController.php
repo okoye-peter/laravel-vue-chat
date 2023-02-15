@@ -39,9 +39,10 @@ class ChatController extends Controller
     public function markAsRead($id)
     {
         $timeStamp = Carbon::now();
-        if(Chat::where('receiver_id', auth()->id())->where('user_id',$id)->whereNull('read_at')->update(['read_at' => $timeStamp])){
-            return  response(['timestamp' => $timeStamp->toDateTimeString(),'userd_id' => $id, 'receiver_id' =>auth()->id()], 204);
-        }
+        Chat::where('receiver_id', auth()->id())->where('user_id',$id)->whereNull('read_at')->get()->each(function($chat) use ($timeStamp){
+            $chat->update(['read_at' => $timeStamp]);
+        });
+        return response(['timestamp' => $timeStamp->toDateTimeString(),'user_id' => $id, 'receiver_id' => auth()->id()]);   
     }
 
     public function index()

@@ -14,7 +14,7 @@ const chats = {
     },
     updateChat(state, payload) {
         state.chats.forEach(chat => {
-            if(chat.user_id == payload.user_id && chat.receiver_id == payload.receiver_id && chat.read_at == null){
+          if(chat.user_id == payload.user_id && chat.receiver_id == payload.receiver_id && chat.read_at == null){
                 chat.read_at = payload.timestamp;
             }
         })
@@ -33,7 +33,8 @@ const chats = {
     },
     async markChatsAsRead({ commit }, data) {
       await axios.get(process.env.MIX_API_URL + `api/chats/${data}`).then((response) => {
-        if (response.status === 204 ) {
+        if (response.status === 200 ) {
+          console.log('data', response.data)
           commit("updateChat", response.data);
           commit("users/updateUserUnread",{id: data,unread: 0},{ root: true });
         }

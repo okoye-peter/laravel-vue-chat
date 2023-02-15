@@ -6,10 +6,7 @@
                 <img class="profile-img online" :src="getAuthenticatedUser.image" alt="" />
                 <p class="text-white">{{ getAuthenticatedUser.name }}</p>
 
-                <i
-                    class="fa fa-chevron-down expand-button"
-                    aria-hidden="true"
-                ></i>
+                <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
                 <div class="status-options">
                     <ul>
                         <li class="status-online active">
@@ -31,23 +28,14 @@
                     </ul>
                 </div>
                 <div class="expanded">
-                    <label for="name"
-                        ><i class="fa fa-user fa-fw" aria-hidden="true"></i
-                    ></label>
+                    <label for="name"><i class="fa fa-user fa-fw" aria-hidden="true"></i></label>
                     <input name="name" type="text" :value="getAuthenticatedUser.name" />
-                    <label for="email"
-                        ><i class="far fa-envelope fa-fw" aria-hidden="true"></i
-                    ></label>
+                    <label for="email"><i class="far fa-envelope fa-fw" aria-hidden="true"></i></label>
                     <input name="email" type="text" :value="getAuthenticatedUser.email" />
-                    <label for="username"
-                        ><i class="fa fa-instagram fa-fw" aria-hidden="true"></i
-                    ></label>
+                    <label for="username"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
                     <input name="twitter" type="text" :value="getAuthenticatedUser.username" />
-                    <button
-                        :disabled="loading"
-                        class="bg-red-500 text-white px-4 py-2 rounded-full w-full"
-                        @click="Logout"
-                    >
+                    <button :disabled="loading" class="bg-red-500 text-white px-4 py-2 rounded-full w-full"
+                        @click="Logout">
                         Logout
                     </button>
                 </div>
@@ -57,37 +45,19 @@
 
         <!-- search friends -->
         <div class="search">
-            <label for=""
-                ><i class="fa fa-search" aria-hidden="true"></i
-            ></label>
-            <input
-                type="text"
-                placeholder="Search contacts..."
-                v-model="query"
-                @keydown="filterFriends"
-            />
+            <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+            <input type="text" placeholder="Search contacts..." v-model="query" @keydown="filterFriends" />
         </div>
         <!-- search friends ends -->
 
         <!-- friends list -->
         <ul class="overflow-y-auto overflow-x-hidden">
-            <li
-                class="mb-4 px-4 relative py-3"
-                v-for="(friend, index) in friends"
-                :key="index"
-                @click="chooseActiveUser(friend.id)"
-            >
+            <li class="mb-4 px-4 relative py-3" v-for="(friend, index) in friends" :key="index"
+                @click="chooseActiveUser(friend.id)">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 h-10 w-10 relative">
-                        <img
-                            class="h-10 w-10 rounded-full"
-                            :src="friend.image"
-                            alt=""
-                        />
-                        <i
-                            class="fas fa-circle"
-                            :class="[friend.online == 1 ? 'online' : '']"
-                        ></i>
+                        <img class="h-10 w-10 rounded-full" :src="friend.image" alt="" />
+                        <i class="fas fa-circle" :class="[friend.online == 1 ? 'online' : '']"></i>
                     </div>
                     <div class="ml-4">
                         <div class="text-sm font-medium text-left">
@@ -98,10 +68,8 @@
                         </div>
                     </div>
                     <div class="text-sm text-right flex-1">
-                        <aside
-                            class="rounded-full bg-green-100 text-green-800 inline-block text-center text-xs"
-                            v-show="friend.unread"
-                        >
+                        <aside class="rounded-full bg-green-100 text-green-800 inline-block text-center text-xs"
+                            v-show="friend.unread">
                             {{ friend.unread }}
                         </aside>
                     </div>
@@ -109,11 +77,7 @@
             </li>
         </ul>
         <!-- friends list ends -->
-        <loading
-            v-model:active="isLoading"
-            :can-cancel="true"
-            :is-full-page="fullPage"
-        />
+        <loading v-model:active="isLoading" :can-cancel="true" :is-full-page="fullPage" />
     </div>
 </template>
 
@@ -171,7 +135,8 @@ export default {
             });
         }, 5000);
         this.emitter.on("newMessage", (chat) => {
-            this.friends.find((friend) => friend.id == chat.user_id).unread = this.getUnreadChatsCount(chat.user_id);
+            this.friends.find((friend) => friend.id == chat.user_id).unread =
+                this.getUnreadChatsCount(chat.user_id);
             this.friends = this.sortUsersList(this.getUsers);
         });
     },
@@ -326,14 +291,7 @@ export default {
     margin: 5px 0 0 0;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li
-    span.status-circle:before {
+.frame .sidepanel .profile .wrap .status-options ul li span.status-circle:before {
     content: "";
     position: absolute;
     width: 14px;
@@ -348,91 +306,35 @@ export default {
     padding-left: 12px;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-online
-    span.status-circle {
+.frame .sidepanel .profile .wrap .status-options ul li.status-online span.status-circle {
     background: #2ecc71;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-online.active
-    span.status-circle:before {
+.frame .sidepanel .profile .wrap .status-options ul li.status-online.active span.status-circle:before {
     border: 1px solid #2ecc71;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-away
-    span.status-circle {
+.frame .sidepanel .profile .wrap .status-options ul li.status-away span.status-circle {
     background: #f1c40f;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-away.active
-    span.status-circle:before {
+.frame .sidepanel .profile .wrap .status-options ul li.status-away.active span.status-circle:before {
     border: 1px solid #f1c40f;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-busy
-    span.status-circle {
+.frame .sidepanel .profile .wrap .status-options ul li.status-busy span.status-circle {
     background: #e74c3c;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-busy.active
-    span.status-circle:before {
+.frame .sidepanel .profile .wrap .status-options ul li.status-busy.active span.status-circle:before {
     border: 1px solid #e74c3c;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-offline
-    span.status-circle {
+.frame .sidepanel .profile .wrap .status-options ul li.status-offline span.status-circle {
     background: #95a5a6;
 }
 
-.frame
-    .sidepanel
-    .profile
-    .wrap
-    .status-options
-    ul
-    li.status-offline.active
-    span.status-circle:before {
+.frame .sidepanel .profile .wrap .status-options ul li.status-offline.active span.status-circle:before {
     border: 1px solid #95a5a6;
 }
 
